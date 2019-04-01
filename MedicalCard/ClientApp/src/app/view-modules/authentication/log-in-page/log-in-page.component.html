@@ -1,0 +1,57 @@
+<app-frame-container>
+	<h1 class="display-3 text-center" translate="LOG_IN_PAGE.TITLE"></h1>
+	<form [formGroup]="form" (submit)="submit()">
+		<app-input-form-group
+			[field]="email"
+			label="LABEL.EMAIL"
+			[group]="form"
+			name="email"
+			controlName="email"
+		>
+		</app-input-form-group>
+
+		<app-input-password-form-group
+			[field]="password"
+			label="LABEL.PASSWORD"
+			[group]="form"
+			name="password"
+			controlName="password"
+		></app-input-password-form-group>
+
+		<div class="form-group">
+			<app-input-checkbox
+				[field]="rememberMe"
+				label="LABEL.REMEMBER_ME"
+				[group]="form"
+				name="rememberMe"
+				controlName="rememberMe"
+			>
+			</app-input-checkbox>
+		</div>
+
+		<div class="form-group row">
+			<div class="col-auto">
+				<a
+					routerLink="/authentication/forgot-password"
+					translate="LINK.FORGOTTEN_PASSWORD"
+				></a>
+			</div>
+			<div class="col-auto ml-auto">
+				<a
+					routerLink="/authentication/registration"
+					translate="LINK.REGISTRATION"
+				></a>
+			</div>
+		</div>
+
+		<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+		<div *ngIf="success" class="alert alert-success">{{ success }}</div>
+		<div class="text-centr">
+			<button
+				class="btn btn-primary"
+				type="submit"
+				translate="BUTTON.SUBMIT"
+			></button>
+		</div>
+	</form>
+</app-frame-container>

@@ -1,0 +1,41 @@
+{
+	"FORGOT_PASSWORD_PAGE": {
+		"TITLE": "Forgot password"
+	},
+	"LOG_IN_PAGE": {
+		"TITLE": "Login"
+	},
+	"REGISTRATION_PAGE": {
+		"TITLE": "Registration"
+	},
+	"RESET_PASSWORD_PAGE": {
+		"TITLE": "Reset password"
+	},
+	"NAVIGATION": {
+		"LOGIN": "LogIn",
+		"HOME": "Home",
+		"LOGOUT": "Logout"
+	},
+	"LABEL": {
+		"EMAIL": "Email",
+		"PASSWORD": "Password",
+		"REMEMBER_ME": "Remember me",
+		"BIRTHDAY": "Birthday",
+		"FIRST_NAME": "First name",
+		"MIDDLE_NAME": "Middle name",
+		"LAST_NAME": "Last name",
+		"PERSONAL_DATA": "I agree to the processing of mine personal data"
+	},
+	"LINK": {
+		"FORGOTTEN_PASSWORD": "Forgotten password",
+		"REGISTRATION": "Register here",
+		"LOG_IN": "LogIn"
+	},
+	"BUTTON": {
+		"SUBMIT": "Submit"
+	},
+	"FORM_ERROR": {
+		"REQUIRED": "Required",
+		"EMAIL": "Email format"
+	}
+}

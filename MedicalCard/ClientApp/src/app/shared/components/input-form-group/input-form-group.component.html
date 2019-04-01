@@ -1,0 +1,16 @@
+<div class="form-group" [formGroup]="group">
+	<label *ngIf="label" [translate]="label"></label>
+	<input
+		class="form-control"
+		[formControlName]="controlName"
+		[attr.name]="name"
+		[attr.maxlength]="maxlength"
+		[class.is-invalid]="isInvalid()"
+	/>
+	<ng-content></ng-content>
+	<div *ngIf="field.errors && field.dirty" class="invalid-feedback">
+		<div *ngFor="let error of getError()">
+			<p [translate]="error"></p>
+		</div>
+	</div>
+</div>

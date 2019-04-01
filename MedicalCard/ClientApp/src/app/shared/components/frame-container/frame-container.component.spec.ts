@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FetchDataComponent } from './fetch-data.component';
+import { FrameContainerComponent } from './frame-container.component';
 
-describe('FetchDataComponent', () => {
-  let component: FetchDataComponent;
-  let fixture: ComponentFixture<FetchDataComponent>;
+describe('FrameContainerComponent', () => {
+  let component: FrameContainerComponent;
+  let fixture: ComponentFixture<FrameContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FetchDataComponent ]
+      declarations: [ FrameContainerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FetchDataComponent);
+    fixture = TestBed.createComponent(FrameContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

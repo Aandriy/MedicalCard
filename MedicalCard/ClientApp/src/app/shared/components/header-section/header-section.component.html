@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<a class="navbar-brand" translate="NAVIGATION.HOME" routerLink="/"></a>
+
+	<ul class="navbar-nav mr-auto">
+		<li class="nav-item">
+			<a
+				class="nav-link"
+				routerLink="/authentication"
+				translate="NAVIGATION.LOGIN"
+			></a>
+		</li>
+	</ul>
+	<ul class="navbar-nav ml-auto">
+		<li class="nav-item">
+			<a
+				class="nav-link"
+				(click)="onLogout()"
+				translate="NAVIGATION.LOGOUT"
+			></a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link">{{ initials }}</a>
+		</li>
+	</ul>
+</nav>

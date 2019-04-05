@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from '../../../services/authentication.service';
+import { catchError } from 'rxjs/operators';
+import { get } from 'lodash';
 
 @Component({
 	selector: 'app-registration-page',
@@ -16,6 +18,8 @@ export class RegistrationPageComponent {
 	public lastName: FormControl = new FormControl('', [Validators.required]);
 	public middleName: FormControl = new FormControl('', [Validators.required]);
 	public isAllowed: FormControl = new FormControl(false, [Validators.pattern('true')]);
+
+	public isAccountCreated = false;
 
 	public form: FormGroup = new FormGroup({
 		firstName: this.firstName,
@@ -51,13 +55,22 @@ export class RegistrationPageComponent {
 			}, {}) as IRegisterViewModel;
 
 			model.birthday = this.birthday.value.formatted;
-			console.log(model);
 
-			this._authenticationService.register(model).subscribe(x => {
-				//delete model.birthday;
+			this._authenticationService
+				.register(model)
+				.pipe(
+					catchError((err: IBadRequest) => {
+						const errors: InvalidItem[] = get(err, 'error.validations');
 
-				console.log(x);
-			});
+						if (Array.isArray(errors)) {
+							this.error = errors.map((error: InvalidItem) => error.message).join(', ');
+						}
+						return [];
+					}),
+				)
+				.subscribe(() => {
+					this.isAccountCreated = true;
+				});
 		}
 	}
 }

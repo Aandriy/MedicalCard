@@ -49,8 +49,8 @@ export class LogInPageComponent {
 			this._authenticationService
 				.login(model)
 				.pipe(
-					catchError((err: any) => {
-						const errors = get(err, 'error.validation');
+					catchError((err: IBadRequest) => {
+						const errors: InvalidItem[] = get(err, 'error.validations');
 
 						if (Array.isArray(errors)) {
 							this.error = errors.map((error: InvalidItem) => error.message).join(', ');

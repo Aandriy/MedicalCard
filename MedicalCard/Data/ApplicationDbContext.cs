@@ -49,10 +49,9 @@ namespace MedicalCard.Data
 			});
 		}
 
-		private void _defaultData() {
+		private void _defaultData()
+		{
 
 		}
 	}
-
-	
 }

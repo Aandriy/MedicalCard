@@ -1,9 +1,13 @@
+using MedicalCard.ConfigModels;
 using MedicalCard.Data;
 using MedicalCard.Filters;
 using MedicalCard.Models;
+using MedicalCard.Services;
+using MedicalCard.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +27,9 @@ namespace MedicalCard
 		{
 			Configuration = configuration;
 			HostingEnvironment = env;
+
+
+
 		}
 
 		public IConfiguration Configuration { get; }
@@ -32,11 +39,14 @@ namespace MedicalCard
 		public void ConfigureServices(IServiceCollection services)
 		{
 
+			services.Configure<SendEmail>(Configuration.GetSection("SendEmail"));
+			services.AddDataProtection();
 			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+				options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
 			services.AddIdentity<User, IdentityRole>()
-				.AddEntityFrameworkStores<ApplicationDbContext>();
+				.AddEntityFrameworkStores<ApplicationDbContext>()
+				.AddDefaultTokenProviders();
 
 			services.ConfigureApplicationCookie(options =>
 			{
@@ -46,6 +56,9 @@ namespace MedicalCard
 					return Task.CompletedTask;
 				};
 			});
+
+			
+			services.AddSingleton<IMailService, EmailService>();
 
 			services.AddMvc()
 				.AddMvcOptions(p =>
@@ -79,6 +92,8 @@ namespace MedicalCard
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
+			var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
+			Extensions.UrlHelperExtensions.Configure(httpContextAccessor);
 
 			app.UseAuthentication();
 

@@ -5,8 +5,14 @@
 	"LOG_IN_PAGE": {
 		"TITLE": "Login"
 	},
+	"CONFIRM_EMAIL_PAGE": {
+		"TITLE": "confirm email page",
+		"ERROR": "Token for confirm email  is not valid"
+	},
 	"REGISTRATION_PAGE": {
-		"TITLE": "Registration"
+		"TITLE": "Registration",
+		"SUCCESS_TUTLE": "User successfully created",
+		"SUCCESS_MESSAGE": "Please check your email to confirm your account"
 	},
 	"RESET_PASSWORD_PAGE": {
 		"TITLE": "Reset password"

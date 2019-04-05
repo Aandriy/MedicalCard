@@ -1,0 +1,8 @@
+<app-frame-container>
+	<div *ngIf="!isError">
+		<p translate="CONFIRM_EMAIL_PAGE.TITLE"></p>
+	</div>
+	<div *ngIf="isError">
+		<p translate="CONFIRM_EMAIL_PAGE.ERROR"></p>
+	</div>
+</app-frame-container>

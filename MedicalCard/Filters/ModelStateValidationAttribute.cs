@@ -1,4 +1,5 @@
 ﻿using MedicalCard.Helpers;
+using MedicalCard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -11,9 +12,9 @@ namespace MedicalCard.Filters
 			if (!context.ModelState.IsValid)
 			{
 				var errors = ValidationHelper.GetErrorsList(context.ModelState);
-				context.Result = new OkObjectResult(new
+				context.Result = new OkObjectResult(new BadRequestViewModel
 				{
-					Validation = errors
+					Validations = errors
 				});
 			}
 		}

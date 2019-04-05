@@ -12,6 +12,7 @@ import { FrameContainerComponent } from './components/frame-container/frame-cont
 import { InputCheckboxComponent } from './components/input-checkbox/input-checkbox.component';
 import { DatePickerFormGroupComponent } from './components/date-picker-form-group/date-picker-form-group.component';
 import { HeaderSectionComponent } from './components/header-section/header-section.component';
+import { SuccessMessageComponent } from './components/success-message/success-message.component';
 
 @NgModule({
 	declarations: [
@@ -21,6 +22,7 @@ import { HeaderSectionComponent } from './components/header-section/header-secti
 		InputCheckboxComponent,
 		DatePickerFormGroupComponent,
 		HeaderSectionComponent,
+		SuccessMessageComponent,
 	],
 	exports: [
 		InputFormGroupComponent,
@@ -29,6 +31,7 @@ import { HeaderSectionComponent } from './components/header-section/header-secti
 		InputCheckboxComponent,
 		DatePickerFormGroupComponent,
 		HeaderSectionComponent,
+		SuccessMessageComponent,
 	],
 	imports: [CommonModule, TranslateModule, FormsModule, ReactiveFormsModule, MyDatePickerModule, RouterModule],
 	providers: [

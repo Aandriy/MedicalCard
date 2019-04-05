@@ -44,7 +44,7 @@ export class RequestInterceptorService implements HttpInterceptor {
 			case UNAUTHORIZED:
 				const url = '/authentication';
 
-				if (url === this._router.url) {
+				if (url === this._router.url || window.location.pathname.indexOf(url) === 0) {
 					return throwError(err);
 				}
 				this._router.navigate([url]);

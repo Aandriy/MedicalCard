@@ -1,3 +1,3 @@
 interface IBadRequest {
-	validation: InvalidItem[];
+	validations: InvalidItem[];
 }

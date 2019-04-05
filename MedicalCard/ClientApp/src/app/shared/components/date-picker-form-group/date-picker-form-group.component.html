@@ -4,16 +4,9 @@
 		name="name"
 		[options]="myDatePickerOptions"
 		[formControlName]="controlName"
+		[class.is-invalid]="isInvalid()"
 	></my-date-picker>
 
-	<input
-		class="form-control"
-		[formControlName]="controlName"
-		[attr.name]="name"
-		[attr.maxlength]="maxlength"
-		[class.is-invalid]="isInvalid()"
-	/>
-	<ng-content></ng-content>
 	<div *ngIf="field.errors && field.dirty" class="invalid-feedback">
 		<div *ngFor="let error of getError()">
 			<p [translate]="error"></p>

@@ -8,18 +8,15 @@ namespace MedicalCard.ViewModels
 	{
 		[Required]
 		[MaxLength(256)]
-		[Display(Name = "Email")]
 		public string Email { get; set; }
 
 		[Required]
-		[Display(Name = "Год рождения")]
 		[DataType(DataType.Date)]
 		//[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
 		public DateTime Birthday { get; set; }
 
 		[Required]
 		[DataType(DataType.Password)]
-		[Display(Name = "Пароль")]
 		public string Password { get; set; }
 
 		[Required]

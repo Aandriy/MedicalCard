@@ -8,6 +8,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordPageComponent } from './reset-password-page/reset-password-page.component';
+import { ConfirmEmailPageComponent } from './confirm-email-page/confirm-email-page.component';
 
 const routes: Routes = [
 	{
@@ -29,10 +30,21 @@ const routes: Routes = [
 		pathMatch: 'full',
 		component: ResetPasswordPageComponent,
 	},
+	{
+		path: 'confirm-email',
+		pathMatch: 'full',
+		component: ConfirmEmailPageComponent,
+	},
 ];
 
 @NgModule({
-	declarations: [LogInPageComponent, RegistrationPageComponent, ForgotPasswordComponent, ResetPasswordPageComponent],
+	declarations: [
+		LogInPageComponent,
+		RegistrationPageComponent,
+		ForgotPasswordComponent,
+		ResetPasswordPageComponent,
+		ConfirmEmailPageComponent,
+	],
 	imports: [
 		SharedModule.forRoot(),
 		CommonModule,

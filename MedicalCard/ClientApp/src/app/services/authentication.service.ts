@@ -28,4 +28,9 @@ export class AuthenticationService {
 
 		return this._http.post(url, model);
 	}
+	public confirmEmail(userId: string, code: string): Observable<null> {
+		const url = `${this._baseApiUrl}Account/ConfirmEmail`;
+
+		return this._http.get<null>(url, { params: { userId, code } });
+	}
 }

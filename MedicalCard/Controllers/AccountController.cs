@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MedicalCard.Extensions;
 using MedicalCard.Filters;
+using MedicalCard.Helpers;
 using MedicalCard.Models;
+using MedicalCard.Services;
 using MedicalCard.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,57 +18,91 @@ namespace MedicalCard.Controllers
 	{
 		private readonly UserManager<User> _userManager;
 		private readonly SignInManager<User> _signInManager;
+		private readonly IMailService _mailService;
 
-		public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+		public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IMailService mailService)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
+			_mailService = mailService;
 		}
 
 		[HttpPost("[action]")]
 		[ModelStateValidation]
 		public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
 		{
-			User user = new User { Email = model.Email, UserName = model.Email, Birthday = model.Birthday };
+			User user = new User
+			{
+				LastName = model.LastName,
+				MiddleName = model.MiddleName,
+				FirstName = model.FirstName,
+				Gender = model.Gender,
+				Email = model.Email,
+				UserName = model.Email,
+				Birthday = model.Birthday
+			};
 			// добавляем пользователя
 			var result = await _userManager.CreateAsync(user, model.Password);
 			if (result.Succeeded)
 			{
-				// установка куки
-				await _signInManager.SignInAsync(user, false);
-				//return RedirectToAction("Index", "Home");
-				return Ok(new { Redirect = "/EmailConfirmation" });
+				// генерация токена для пользователя
+				var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+				string callbackUrl = new Uri(Url.AbsolutePath("/authentication/confirm-email"))
+				.AddQuery("userId", user.Id)
+				.AddQuery("code", code).ToString();
+
+				_mailService.Send(new MailModel
+				{
+					From = "Noreply@gamil.com",
+					Receptions = model.Email,
+					Subject = "Confirm your account",
+					Body = String.Format("Confirm registration by clicking on the <a href='{0}'>link</a>", callbackUrl)
+				});
+
+				return Ok(null);
 			}
 
 			var errors = AddErrors(result);
-			return BadRequest(new { Validation = errors });
+			return BadRequest(new BadRequestViewModel { Validations = errors });
 		}
 
+		[HttpGet("[action]")]
+		public async Task<IActionResult> ConfirmEmail(string userId, string code)
+		{
+			string errorMessage = "Error";
+
+			if (userId == null || code == null)
+			{
+				return BadRequest(ValidationHelper.AddValidationError(errorMessage));
+			}
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				return BadRequest(ValidationHelper.AddValidationError(errorMessage));
+			}
+
+			var result = await _userManager.ConfirmEmailAsync(user, code);
+			if (!result.Succeeded)
+			{
+				return BadRequest(ValidationHelper.AddValidationError(errorMessage));
+			}
+			await _signInManager.SignInAsync(user, false);
+
+			return Ok(null);
+		}
 
 		[HttpPost("[action]")]
-		//[ValidateAntiForgeryToken]
 		[ModelStateValidation]
 		public async Task<IActionResult> Login([FromBody] LoginViewModel model)
 		{
-
 			var result =
 				await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 			if (result.Succeeded)
 			{
-				return Ok(new { });
-
+				return Ok(null);
 			}
 
-			List<InvalidItem> errors = new List<InvalidItem>();
-			
-			errors.Add(new InvalidItem
-			{
-				Field = "",
-				Message = "Неправильный логин и (или) пароль"
-			});
-
-			return BadRequest(new { Validation = errors });
-
+			return BadRequest(ValidationHelper.AddValidationError("Неправильный логин и (или) пароль"));
 		}
 
 		[HttpDelete("[action]")]
@@ -74,6 +111,67 @@ namespace MedicalCard.Controllers
 			await _signInManager.SignOutAsync();
 			return Ok(null);
 		}
+
+		[HttpPost("[action]")]
+		[ModelStateValidation]
+		//[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
+		{
+			var user = await _userManager.FindByNameAsync(model.Email);
+			if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+			{
+				// пользователь с данным email может отсутствовать в бд
+				// тем не менее мы выводим стандартное сообщение, чтобы скрыть 
+				// наличие или отсутствие пользователя в бд
+				return Ok(null);
+			}
+
+			var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+			string callbackUrl = new Uri(Url.AbsolutePath("/authentication/reset-password"))
+				.AddQuery("userId", user.Id)
+				.AddQuery("code", code).ToString();
+
+			_mailService.Send(new MailModel
+			{
+				From = "Noreply@gamil.com",
+				Receptions = model.Email,
+				Subject = "Reset Password",
+				Body = String.Format("To reset your password, click the <a href='{0}'>link</a>", callbackUrl)
+			});
+
+			return Ok(null);
+		}
+
+
+		[HttpGet("[action]")]
+		public IActionResult ResetPassword(string code = null)
+		{
+			if (code == null) {
+				return BadRequest(ValidationHelper.AddValidationError("Error"));
+			}
+			return Ok(null);
+		}
+
+		[HttpPost("[action]")]
+		[ModelStateValidation]
+		//[ValidateAntiForgeryToken]
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
+		{
+			var user = await _userManager.FindByNameAsync(model.Email);
+			if (user == null)
+			{
+				//return View("ResetPasswordConfirmation");
+				return Ok(null);
+			}
+			var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
+			if (!result.Succeeded)
+			{
+				var errors = AddErrors(result);
+				return BadRequest(new BadRequestViewModel { Validations = errors });
+			}
+			return Ok(null);
+		}
+
 
 		private List<InvalidItem> AddErrors(IdentityResult result)
 		{

@@ -1,6 +1,6 @@
 .vs/
 MedicalCard/bin/*
 MedicalCard/obj/*
-
+MedicalCard/appsettings.Development.json
 
 

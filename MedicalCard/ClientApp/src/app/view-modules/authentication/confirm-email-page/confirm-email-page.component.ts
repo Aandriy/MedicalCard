@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { catchError } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { UserService } from 'src/app/services/user.service';
 	templateUrl: './confirm-email-page.component.html',
 	styleUrls: ['./confirm-email-page.component.scss'],
 })
-export class ConfirmEmailPageComponent implements OnInit {
+export class ConfirmEmailPageComponent {
 	public isError = false;
 
 	constructor(
@@ -37,9 +37,5 @@ export class ConfirmEmailPageComponent implements OnInit {
 					});
 			}
 		});
-	}
-
-	ngOnInit() {
-		console.log(this._activatedRoute);
 	}
 }

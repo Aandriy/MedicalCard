@@ -28,9 +28,22 @@ export class AuthenticationService {
 
 		return this._http.post(url, model);
 	}
+
 	public confirmEmail(userId: string, code: string): Observable<null> {
 		const url = `${this._baseApiUrl}Account/ConfirmEmail`;
 
 		return this._http.get<null>(url, { params: { userId, code } });
+	}
+
+	public forgotPassword(model): Observable<null> {
+		const url = `${this._baseApiUrl}Account/ForgotPassword`;
+
+		return this._http.post<null>(url, model);
+	}
+
+	public resetPassword(model): Observable<null> {
+		const url = `${this._baseApiUrl}Account/ResetPassword`;
+
+		return this._http.post<null>(url, model);
 	}
 }

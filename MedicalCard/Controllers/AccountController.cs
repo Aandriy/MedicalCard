@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MedicalCard.Data;
 using MedicalCard.Extensions;
 using MedicalCard.Filters;
 using MedicalCard.Helpers;
@@ -10,6 +11,8 @@ using MedicalCard.Services;
 using MedicalCard.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace MedicalCard.Controllers
 {
@@ -19,12 +22,17 @@ namespace MedicalCard.Controllers
 		private readonly UserManager<User> _userManager;
 		private readonly SignInManager<User> _signInManager;
 		private readonly IMailService _mailService;
+		private readonly ApplicationDbContext _applicationDbContext;
 
-		public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, IMailService mailService)
+		public AccountController(UserManager<User> userManager, 
+			SignInManager<User> signInManager, 
+			IMailService mailService,
+			ApplicationDbContext applicationDbContext)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_mailService = mailService;
+			_applicationDbContext = applicationDbContext;
 		}
 
 		[HttpPost("[action]")]
@@ -118,11 +126,9 @@ namespace MedicalCard.Controllers
 		public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
 		{
 			var user = await _userManager.FindByNameAsync(model.Email);
-			if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+			if (user == null)
 			{
-				// пользователь с данным email может отсутствовать в бд
-				// тем не менее мы выводим стандартное сообщение, чтобы скрыть 
-				// наличие или отсутствие пользователя в бд
+				// || !(await _userManager.IsEmailConfirmedAsync(user))
 				return Ok(null);
 			}
 
@@ -143,25 +149,15 @@ namespace MedicalCard.Controllers
 		}
 
 
-		[HttpGet("[action]")]
-		public IActionResult ResetPassword(string code = null)
-		{
-			if (code == null) {
-				return BadRequest(ValidationHelper.AddValidationError("Error"));
-			}
-			return Ok(null);
-		}
-
 		[HttpPost("[action]")]
 		[ModelStateValidation]
 		//[ValidateAntiForgeryToken]
 		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
 		{
-			var user = await _userManager.FindByNameAsync(model.Email);
+			var user = await _userManager.FindByIdAsync(model.UserId);
 			if (user == null)
 			{
-				//return View("ResetPasswordConfirmation");
-				return Ok(null);
+				return BadRequest(ValidationHelper.AddValidationError("Error"));
 			}
 			var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
 			if (!result.Succeeded)
@@ -169,6 +165,16 @@ namespace MedicalCard.Controllers
 				var errors = AddErrors(result);
 				return BadRequest(new BadRequestViewModel { Validations = errors });
 			}
+
+			if (!(await _userManager.IsEmailConfirmedAsync(user)))
+			{
+				var u = await _applicationDbContext.Users.Where(x => x.Id == user.Id).FirstOrDefaultAsync();
+				u.EmailConfirmed = true;
+				await _applicationDbContext.SaveChangesAsync();
+				// tod acivate emails
+			}
+
+			await _signInManager.SignInAsync(user, false);
 			return Ok(null);
 		}
 

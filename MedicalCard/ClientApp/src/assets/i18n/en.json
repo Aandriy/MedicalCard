@@ -1,6 +1,8 @@
 {
 	"FORGOT_PASSWORD_PAGE": {
-		"TITLE": "Forgot password"
+		"TITLE": "Forgot password",
+		"SUCCESS_TUTLE": "The letter was sent",
+		"SUCCESS_MESSAGE": "Please check your email to continue resetting your password."
 	},
 	"LOG_IN_PAGE": {
 		"TITLE": "Login"
@@ -15,7 +17,8 @@
 		"SUCCESS_MESSAGE": "Please check your email to confirm your account"
 	},
 	"RESET_PASSWORD_PAGE": {
-		"TITLE": "Reset password"
+		"TITLE": "Reset password",
+		"ERROR": "Reset password token is invalid"
 	},
 	"NAVIGATION": {
 		"LOGIN": "LogIn",
